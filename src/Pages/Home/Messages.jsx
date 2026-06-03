@@ -27,7 +27,7 @@ function Messages(){
 
     useEffect(() => {
         async function getprofiles(){
-            const response = await fetch("http://localhost:8080/getallprofiles",{
+            const response = await fetch("https://zchat-production-5d76.up.railway.app/getallprofiles",{
                 method : "POST",
                 headers : {
                     "Authorization" : "Bearer " + localStorage.getItem("jwt"),
@@ -51,7 +51,7 @@ function Messages(){
 
     useEffect(() => {
         async function fetchChats(){
-            const response = await fetch("http://localhost:8080/getallchats", {
+            const response = await fetch("https://zchat-production-5d76.up.railway.app/getallchats", {
                 headers : {
                     "Authorization" : "Bearer " + localStorage.getItem("jwt")
                 }
@@ -65,7 +65,7 @@ function Messages(){
     }, []);
     
     useEffect(() => {
-        const socket = new SockJS("http://localhost:8080/chat");
+        const socket = new SockJS("https://zchat-production-5d76.up.railway.app/chat");
         const client = Stomp.over(socket)
         clientref.current = client
         client.connect({
@@ -120,8 +120,13 @@ function Messages(){
         setText("")
     }
 
+    function selectSearchProfile(){
+        setSelectedUser({username : searchprofile.username , email : searchprofile.email , fullname : searchprofile.fullname})
+        setsearchprofile(null)
+    }
+
     async function searchop(username){
-        const response = await fetch("http://localhost:8080/search/"+username,{
+        const response = await fetch("https://zchat-production-5d76.up.railway.app/search/"+username,{
             headers : {
                 "Authorization" : "Bearer " + localStorage.getItem('jwt')
             },
@@ -133,8 +138,8 @@ function Messages(){
     return(
         <> 
 
-            <div className="flex w-full  ">
-                <div className="w-170 h-140  shadow-md">
+            <div className="flex w-full h-full  ">
+                <div className="w-170 flex flex-col h-full  shadow-md">
                     <div className="w-full bg-neutral-50  h-20  shadow-md p-6 ">
                         <h1 className=" text-center text-2xl font-bold font-sans text-orange-600">Chats</h1>
                     </div>
@@ -149,7 +154,7 @@ function Messages(){
                             {searchprofile != null && <>
                             <div 
                                 key={searchprofile.username}
-                                onClick={() => setSelectedUser({username : searchprofile.username ,fullname : searchprofile.fullname, email : searchprofile.email})}
+                                onClick={() => selectSearchProfile()}
                                 className="w-full min-h-15 flex border-b-2 gap-4 hover:cursor-pointer items-center p-4 bg-white rounded-2xl">
                                 <div>
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" 
@@ -185,7 +190,7 @@ function Messages(){
                         </div>
                     </div>    
                 </div>
-                <div className="w-full">
+                <div className="w-full h-full">
                     {
                         selectedUser.username == null && <div className="w-full h-full flex flex-col justify-center items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" 
@@ -198,8 +203,8 @@ function Messages(){
                         </div>
                     }
                     { selectedUser.username != null && 
-                            <div className=" w-full flex flex-col h-160 border-l-2 bg-neutral-100">
-                    <div className="w-full flex gap-4 items-center p-4  h-20 bg-orange-100">
+                <div className=" w-full flex flex-col h-full border-l-2 bg-neutral-100">
+                    <div className="w-full flex gap-4 items-center p-4 border-b-2  h-20 bg-neutral-50 ">
                         <div>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" 
                             className="size-16 text-orange-400">
@@ -211,29 +216,43 @@ function Messages(){
                             <h2 className="font-sans">{selectedUser.email || "email@gmail.com"}</h2>
                         </div>
                     </div>
-                    <div className="w-full p-8  flex flex-col h-full rounded-b-4xl">
-                    <div ref={chatref} className=" w-full  flex flex-col h-full gap-2 overflow-y-auto rounded-b-4xl">
+                    <div className="w-full p-8 bg-neutral-200 flex gap-4 flex-col h-full ">
+                    <div ref={chatref} className=" w-full max-h-100 flex flex-col flex-3 gap-2 p-4 overflow-y-auto rounded-b-4xl">
                         {
                             (allChats.get(selectedUser.username)|| []).map((message) => {
+                                if(message.fromUsername == message.toUsername){
+                                    return (
+                                        <div className="w-full h-15 justify-end flex">
+                                            <div className="p-4 w-fit flex rounded-2xl h-15 items-center gap-2 bg-pink-300">
+                                                <h1 className="font-bold font-mono text-white">{message.message}</h1>
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" 
+                                                className="size-6 text-neutral-50">
+                                                <path fillRule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clipRule="evenodd" />
+                                                </svg>
+                                                
+                                            </div>
+                                        </div>
+                                    )
+                                }
                                 if(message.fromUsername == selectedUser.username){
                                     return (
                                         <div className="w-full h-15  flex">
-                                            <div className="p-4 w-fit flex h-15 gap-2 bg-purple-100">
+                                            <div className="p-4 rounded-2xl w-fit flex h-15 gap-2 items-center bg-purple-300">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" 
-                                                className="size-6 text-neutral-800">
+                                                className="size-6 text-neutral-50">
                                                 <path fillRule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clipRule="evenodd" />
                                                 </svg>
-                                                <h1 className="font-bold">{message.message}</h1>
+                                                <h1 className="font-bold font-mono text-white">{message.message}</h1>
                                             </div>
                                         </div>
                                     )
                                 }else{
                                     return (
                                         <div className="w-full h-15 justify-end flex">
-                                            <div className="p-4 w-fit flex  h-15 gap-2 bg-pink-100">
-                                                <h1 className="font-bold">{message.message}</h1>
+                                            <div className="p-4 w-fit flex rounded-2xl h-15 items-center gap-2 bg-pink-300">
+                                                <h1 className="font-bold font-mono text-white">{message.message}</h1>
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" 
-                                                className="size-6 text-neutral-800">
+                                                className="size-6 text-neutral-50">
                                                 <path fillRule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clipRule="evenodd" />
                                                 </svg>
                                                 

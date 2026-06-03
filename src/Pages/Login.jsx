@@ -1,16 +1,17 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,Link } from "react-router-dom";
 
 
 function Login(){
     const [username , setUsername] = useState("")
     const [password , setPassword] = useState("")
     const [failed,setFailed] = useState("")
+    const [redirecting , setRedirecting] = useState(false)
     const nav = useNavigate()
 
     async function login(e){
         e.preventDefault()
-        const response = await fetch("http://localhost:8080/auth/login",{
+        const response = await fetch("https://zchat-production-5d76.up.railway.app/auth/login",{
             method : "POST",
             headers : {
                 "Content-Type" : "application/json",  
@@ -23,7 +24,8 @@ function Login(){
         console.log(data)
         if(data.code == 0){
             localStorage.setItem('jwt',data.description)
-            nav('home/messages')
+            setRedirecting(true)
+            nav('home/messages')          
         }else {
             setFailed(data.description)
         }
@@ -31,7 +33,7 @@ function Login(){
 
     return(
         <>
-            <div className="w-full h-full bg-neutral-300">
+            <div className="w-full h-screen bg-neutral-300">
                 <div className="w-full h-20 flex justify-between shadow-md bg-white items-center p-4">
                     <div className="w-fit flex gap-4 h-full">
                         <div className=" rounded-full bg-orange-600 w-20 flex justify-center  text-4xl font-extrabold text-white shadow-md">Z</div>
@@ -46,7 +48,7 @@ function Login(){
                         <h1 className="text-3xl font-bold font-sans text-center">Log in</h1>
                         <div className="p-3 flex gap-2 justify-center">
                             <span className="font-mono font-semibold">new to Zchat?</span>
-                            <span className="font-mono font-semibold text-orange-700">sign up now</span>
+                           <Link to={"/signup"} ><span className="font-mono font-semibold text-orange-700 hover:cursor-pointer hover:underline">sign up now</span></Link> 
                         </div>
                         <form onSubmit={login} className="w-full p-6 flex flex-col gap-5">
                             <div className="flex items-center gap-4 border-2 pr-3 rounded-2xl ">
@@ -65,6 +67,7 @@ function Login(){
                             </div>
                             <h1 className="font-semibold text-orange-700">forget password?</h1>
                             <h1 className="text-red-500 font-bold">{failed}</h1>
+                            {redirecting && <h1 className="text-green-500 font-bold">redirecting...</h1>}
                             <button type="submit" className="bg-red-500 text-2xl font-extrabold rounded-3xl text-white p-2">Log In</button>
                         </form>
                     </div>
