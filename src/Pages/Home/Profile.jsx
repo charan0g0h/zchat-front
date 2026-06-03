@@ -52,7 +52,14 @@ function Profile(){
                             <h1 className="font-sans">email</h1>
                         </div>
                         <div>
-                            <h1 className="text-2xl text-neutral-600 font-bold">{profile.creationDate || "13131"}</h1>
+                            <h1 className="text-2xl text-neutral-600 font-bold">{profile.creationDate && 
+                            new Date(profile.creationDate).toLocaleString("en-IN", {
+                                                                            day: "2-digit",
+                                                                            month: "short",
+                                                                            year: "numeric",
+                                                                            hour: "2-digit",
+                                                                            minute: "2-digit",
+                                                                            })}</h1>
                             <h1 className="font-sans">Date of creation</h1>
                         </div>
                     </div>
@@ -75,7 +82,15 @@ function Profile(){
                                     <h1 className="text-2xl  font-bold font-sans">{call.toUsername}</h1>
                                     <h1>{call.toEmail}</h1>
                                     <h1 className="text-2xl">{call.status}</h1>  
-                                    <h1>{call.date}</h1>    
+                                    <h1>{call.date && 
+                                        new Date(profile.creationDate).toLocaleString("en-IN", {
+                                            day: "2-digit",
+                                            month: "short",
+                                            year: "numeric",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                        })}
+                                    </h1>    
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`size-8 ${call.status === 'Answered' ? "text-green-500" : "text-red-500"}`}>
                                     <path fillRule="evenodd" d="M15 3.75a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0V5.56l-4.72 4.72a.75.75 0 1 1-1.06-1.06l4.72-4.72h-2.69a.75.75 0 0 1-.75-.75Z" clipRule="evenodd" />
                                     <path fillRule="evenodd" d="M1.5 4.5a3 3 0 0 1 3-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 0 1-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 0 0 6.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 0 1 1.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 0 1-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5Z" clipRule="evenodd" />
@@ -88,7 +103,15 @@ function Profile(){
                                         <h1 className="text-2xl  font-bold font-sans">{call.fromUsername}</h1>
                                         <h1>{call.toEmail}</h1>
                                         <h1 className="text-2xl">{call.status}</h1>  
-                                        <h1>{call.date}</h1>    
+                                        <h1>{call.date &&
+                                            new Date(profile.creationDate).toLocaleString("en-IN", {
+                                            day: "2-digit",
+                                            month: "short",
+                                            year: "numeric",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                            })}
+                                        </h1>    
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`size-8 ${call.status === 'Answered' ? "text-green-500" : "text-red-500"}`}>
                                         <path fillRule="evenodd" d="M19.5 9.75a.75.75 0 0 1-.75.75h-4.5a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 1 1.5 0v2.69l4.72-4.72a.75.75 0 1 1 1.06 1.06L16.06 9h2.69a.75.75 0 0 1 .75.75Z" clipRule="evenodd" />
                                         <path fillRule="evenodd" d="M1.5 4.5a3 3 0 0 1 3-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 0 1-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 0 0 6.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 0 1 1.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 0 1-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5Z" clipRule="evenodd" />
