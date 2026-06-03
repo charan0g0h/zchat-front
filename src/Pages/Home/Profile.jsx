@@ -83,7 +83,7 @@ function Profile(){
                                     <h1>{call.toEmail}</h1>
                                     <h1 className="text-2xl">{call.status}</h1>  
                                     <h1>{call.date && 
-                                        new Date(profile.creationDate).toLocaleString("en-IN", {
+                                        new Date(call.date).toLocaleString("en-IN", {
                                             day: "2-digit",
                                             month: "short",
                                             year: "numeric",
@@ -104,7 +104,7 @@ function Profile(){
                                         <h1>{call.toEmail}</h1>
                                         <h1 className="text-2xl">{call.status}</h1>  
                                         <h1>{call.date &&
-                                            new Date(profile.creationDate).toLocaleString("en-IN", {
+                                            new Date(call.date).toLocaleString("en-IN", {
                                             day: "2-digit",
                                             month: "short",
                                             year: "numeric",
