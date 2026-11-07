@@ -122,51 +122,78 @@ function Profile() {
             const data = await response.json();
             setProfile(data);
         }
-        // A failure here must not break the rest of the profile page
-        async function fetchRequests() {
-            try {
-                const response = await fetch(url + "/getallrequest", {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem("jwt"),
-                    },
-                });
-                const data = await response.json();
-                setRequests(Array.isArray(data) ? data : []);
-            } catch (err) {
-                setFriendError("Couldn't load friend requests.");
-            }
-        }
-        Promise.all([fetchProfile(), fetchRecent(), fetchRequests()])
+        
+        Promise.all([fetchProfile(), fetchRecent()])
             .catch(() => setError("Couldn't load your profile. Check your connection and refresh."))
             .finally(() => setLoading(false));
     }, []);
 
-    const me = profile.username;
-    const incoming = me ? requests.filter((r) => r.toUsername === me && statusOf(r) === "PENDING") : [];
-    const sent = me
-        ? requests.filter((r) => r.fromUsername === me && ["PENDING", "ACCEPTED"].includes(statusOf(r)))
-        : [];
-    const friendRows = me
-        ? requests.filter(
-              (r) => statusOf(r) === "ACCEPTED" && (r.fromUsername === me || r.toUsername === me)
-          )
-        : [];
+    const [incoming, setIncoming] = useState([]);
+    const [sent, setSent] = useState([]);
+    const [friendRows, setFriendRows] = useState([]);
+
+    async function fetchFriendData() {
+        try {
+            const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
+            const [incomingRes, sentRes, friendsRes] = await Promise.all([
+                fetch(`${baseUrl}/getallrequest`, {
+                    headers : {
+                        Authorization : "Bearer " + localStorage.getItem("jwt")
+                    }
+                }),
+                fetch(`${baseUrl}/getallrequested`, {
+                    headers : {
+                        Authorization : "Bearer " + localStorage.getItem("jwt")
+                    }
+                }),
+                fetch(`${baseUrl}/getallfriends`, {
+                    headers : {
+                        Authorization : "Bearer " + localStorage.getItem("jwt")
+                    }
+                })
+            ]);
+
+            if (!incomingRes.ok || !sentRes.ok || !friendsRes.ok) {
+                throw new Error("Failed to fetch friend data");
+            }
+
+            const [incomingData, sentData, friendsData] = await Promise.all([
+                incomingRes.json(),
+                sentRes.json(),
+                friendsRes.json()
+            ]);
+
+            console.log(sentData)
+            console.log(incomingData)
+            console.log(friendsData)
+            setIncoming(incomingData);
+            setSent(sentData);
+            setFriendRows(friendsData);
+        } catch (error) {
+            console.error("Error fetching friend data:", error);
+        }
+    }
+
+    useEffect(() => {
+        fetchFriendData()
+    },[])
 
     // Open the Requests tab on first load if someone is waiting for an answer
     useEffect(() => {
-        if (autoTabDone.current || !me || requests.length === 0) return;
+        if (autoTabDone.current || requests.length === 0) return;
         autoTabDone.current = true;
         if (incoming.length > 0) setFriendTab("requests");
-    }, [me, requests, incoming.length]);
+    }, [ requests, incoming.length]);
 
     async function respond(username, accept) {
         setFriendError("");
         setBusy(username);
         try {
             const response = await fetch(
-                url + (accept ? "/acceptfriend/" : "/rejectfriend/") + encodeURIComponent(username),
+                url + (accept ? "/accept_friendRequest/" : "/reject_friendRequest/") + encodeURIComponent(username),
                 {
-                    method: "POST",
+                    method: "PUT",
                     headers: {
                         Authorization: "Bearer " + localStorage.getItem("jwt"),
                     },
@@ -302,22 +329,22 @@ function Profile() {
                         {friendTab === "requests" &&
                             incoming.map((r) => (
                                 <PersonRow
-                                    key={r.fromUsername}
-                                    name={r.fromUsername}
+                                    key={r.username}
+                                    name={r.username}
                                     subtitle={r.date ? "Sent " + formatDate(r.date) : "Wants to be your friend"}
                                 >
                                     <button
                                         type="button"
-                                        disabled={busy === r.fromUsername}
-                                        onClick={() => respond(r.fromUsername, true)}
+                                        disabled={busy === r.username}
+                                        onClick={() => respond(r.username, true)}
                                         className="h-10 px-4 rounded-xl bg-orange-600 text-sm font-bold text-white transition hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                                     >
                                         Accept
                                     </button>
                                     <button
                                         type="button"
-                                        disabled={busy === r.fromUsername}
-                                        onClick={() => respond(r.fromUsername, false)}
+                                        disabled={busy === r.username}
+                                        onClick={() => respond(r.username, false)}
                                         className="h-10 px-4 rounded-xl bg-stone-200 text-sm font-bold text-stone-700 transition hover:bg-stone-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                                     >
                                         Decline
@@ -329,8 +356,8 @@ function Profile() {
                         {friendTab === "sent" &&
                             sent.map((r) => (
                                 <PersonRow
-                                    key={r.toUsername}
-                                    name={r.toUsername}
+                                    key={r.friend_username}
+                                    name={r.friend_username}
                                     subtitle={r.date ? "Sent " + formatDate(r.date) : "Request sent"}
                                 >
                                     {statusOf(r) === "ACCEPTED" ? (
@@ -344,12 +371,12 @@ function Profile() {
                         {/* Accepted friends, from either direction */}
                         {friendTab === "friends" &&
                             friendRows.map((r) => {
-                                const iSent = r.fromUsername === me;
+                                
                                 return (
                                     <PersonRow
-                                        key={(iSent ? r.toUsername : r.fromUsername)}
-                                        name={iSent ? r.toUsername : r.fromUsername}
-                                        subtitle={iSent ? "Accepted your request" : "You accepted their request"}
+                                        key={(r.friend_username)}
+                                        name={ (r.friend_username) }
+                                        subtitle={ "Accepted your request" }
                                     >
                                         <Pill tone="green">Friends</Pill>
                                     </PersonRow>

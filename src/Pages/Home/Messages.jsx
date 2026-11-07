@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 
-const url = "http://localhost:8081";
+const url = import.meta.env.VITE_API_BASE_URL;
 
 function Avatar({ name, size = "size-12", text = "text-lg" }) {
     const letter = (name || "?").trim().charAt(0).toUpperCase();

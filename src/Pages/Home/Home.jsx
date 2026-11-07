@@ -24,6 +24,26 @@ const navItems = [
         ),
     },
     {
+        to: "/home/feed",
+        label: "feed",
+        icon: (
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="size-6"
+                aria-hidden="true"
+            >
+                <path
+                    fillRule="evenodd"
+                    d="M4.5 3.75A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V6a2.25 2.25 0 0 0-2.25-2.25h-15Zm0 1.5h15A.75.75 0 0 1 20.25 6v12a.75.75 0 0 1-.75.75h-15a.75.75 0 0 1-.75-.75V6a.75.75 0 0 1 .75-.75Zm3 2.25a.75.75 0 0 0 0 1.5h9a.75.75 0 0 0 0-1.5h-9Zm0 3.75a.75.75 0 0 0 0 1.5h9a.75.75 0 0 0 0-1.5h-9Zm0 3.75a.75.75 0 0 0 0 1.5h5.25a.75.75 0 0 0 0-1.5H7.5Z"
+                    clipRule="evenodd"
+                />
+            </svg>
+        ),
+    },
+
+    {
         to: "/home/profile",
         label: "Profile",
         icon: (
@@ -66,11 +86,11 @@ function Home() {
                 aria-label="Main"
                 className="flex md:flex-col items-center justify-between bg-orange-600 text-white px-4 py-2 md:px-0 md:py-5 md:w-20 shrink-0 shadow-xl z-10"
             >
-                <Link to={"/home/about"}>
+                <NavLink to={"/home/about"}>
                     <div className="hidden md:grid size-12 place-items-center rounded-2xl bg-white text-orange-600 text-2xl font-black shadow-md">
                         Z
                     </div>
-                </Link>
+                </NavLink>
                 <ul className="flex md:flex-col gap-2 md:gap-3 flex-1 md:flex-none justify-around md:justify-start">
                     {navItems.map((item) => (
                         <li key={item.to}>

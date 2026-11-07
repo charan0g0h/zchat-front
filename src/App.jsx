@@ -7,6 +7,8 @@ import Videochat from "./Pages/Home/Videochat"
 import Profile from "./Pages/Home/Profile"
 import Signup from "./Pages/Signup"
 import About from "./Pages/Home/about"
+import Feed from "./Pages/Home/Feed"
+
 
 function App() {
   
@@ -19,7 +21,8 @@ function App() {
         <Route element={<About/>} path="about"></Route>
         <Route element={<Messages/>} path="messages"></Route>
         <Route element={<Videochat/>} path="videochat"/>
-        <Route element={<Profile/>} path="profile"></Route>
+        <Route element={<Feed/>} path="feed"/>
+        <Route element={<Profile/>} path ="profile"></Route>
       </Route>
     </Routes>
     </>
