@@ -153,9 +153,9 @@ export default function About() {
         <div className="h-full w-full overflow-y-auto bg-stone-100">
             <div className="mx-auto flex max-w-5xl flex-col gap-5 p-4 md:p-8">
                 {/* Hero */}
-                <section className="relative overflow-hidden rounded-[2rem] bg-orange-600 px-6 py-10 text-white shadow-xl shadow-stone-900/5 md:px-12 md:py-14">
+                <section className="relative overflow-hidden rounded[2rem] bg-orange-600 px-6 py-10 text-white shadow-xl shadow-stone-900/5 md:px-12 md:py-14">
                     <div className="absolute -right-24 -top-32 size-96 rounded-full bg-orange-500/60" />
-                    <div className="absolute -bottom-48 left-1/4 size-[28rem] rounded-full bg-orange-700/40" />
+                    <div className="absolute -bottom-48 left-1/4 size[28rem] rounded-full bg-orange-700/40" />
 
                     <div className="relative grid items-center gap-10 md:grid-cols-[1.05fr_0.95fr]">
                         <div>
@@ -292,7 +292,7 @@ export default function About() {
                 </section>
 
                 {/* Shortcuts */}
-                <section className="relative overflow-hidden rounded-[2rem] bg-stone-900 p-8 text-white md:p-10">
+                <section className="relative overflow-hidden rounded[2rem] bg-stone-900 p-8 text-white md:p-10">
                     <div className="absolute -right-10 -top-24 size-72 rounded-full bg-orange-600/30" />
                     <div className="relative">
                         <h2 className="text-2xl font-extrabold tracking-tight">Pick up where you left off</h2>
