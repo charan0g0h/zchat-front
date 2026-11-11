@@ -6,7 +6,7 @@ import Messages from "./Pages/Home/Messages"
 import Videochat from "./Pages/Home/Videochat"
 import Profile from "./Pages/Home/Profile"
 import Signup from "./Pages/Signup"
-import About from "./Pages/Home/about"
+import About from "./Pages/Home/About"
 import Feed from "./Pages/Home/Feed"
 
 
